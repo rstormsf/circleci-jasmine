@@ -1,3 +1,22 @@
+machine:
+  xcode:
+    version: "7.0"
+  environment:
+    XCODE_SCHEME: ''
+    XCODE_WORKSPACE: 'dummy.xcworkspace'
+    PKG_CONFIG_PATH: /usr/local/lib/pkgconfig:/usr/X11/lib/pkgconfig
+    PROFILE_DIRECTORY: ~/Library/Application\ Support/Google/Chrome
+
+dependencies:
+  pre:
+    - brew install node pkg-config cairo libpng jpeg giflib jq
+    - brew install caskroom/cask/brew-cask
+    - brew cask install --appdir="/Applications" google-chrome
+    - cat $HOME/Library/Application\ Support/Google/Chrome/Default/Preferences | jq '.profile.content_settings.exceptions.media_stream_mic |= .+ {"*,*": {"setting": 1}}' > temporary.preferences
+    - cat temporary.preferences > $HOME/Library/Application\ Support/Google/Chrome/Default/Preferences
+  cache_directories:
+    - /Library/Caches/Homebrew
+
 test:
   override:
-    - npm test
+    - npm run-script test
